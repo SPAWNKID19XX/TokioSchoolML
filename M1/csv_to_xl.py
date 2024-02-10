@@ -25,7 +25,9 @@ for obj in file_lists:
                 res = row[0].split(",")
             else:
                 res = row[0][:-1].split(',"')
-            print(res)
+                if ',' in res[1]:
+                    res[1] = res[1].replace(',' , '.')
+            print(res, res[1])
             cellA = 'A' + str(i+1)
             cellB = 'B' + str(i+1)
             wb[sheet_name][cellA].value = res[0]
