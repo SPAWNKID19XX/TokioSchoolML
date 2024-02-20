@@ -1,21 +1,21 @@
-import matplotlib
-matplotlib.use('TkAgg')  # Use the TkAgg backend (you can try other backends too)
-
 import matplotlib.pyplot as plt
-
-x = [1, 2, 3, 4]
-y = [1, 4, 9, 16]
-
-plt.plot(x, y)
-plt.axis((0, 6, 0, 20))
-plt.show()
-
-
 import numpy as np
 
-# evenly sampled time at 200ms intervals
-t = np.arange(0., 5., 0.2)
+from sklearn import datasets
+from sklearn.linear_model import Lasso
+from sklearn.model_selection import GridSearchCV
 
-# red dashes, blue squares and green triangles
-plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')
-plt.show()
+X, y = datasets.load_diabetes(return_X_y=True)
+X = X[:150]
+y = y[:150]
+
+lasso = Lasso(random_state=0, max_iter=10000)
+alphas = np.logspace(-4, -0.5, 30)
+
+tuned_parameters = [{"alpha": alphas}]
+n_folds = 5
+
+clf = GridSearchCV(lasso, tuned_parameters, cv=n_folds, refit=False)
+clf.fit(X, y)
+scores = clf.cv_results_["mean_test_score"]
+scores_std = clf.cv_results_["std_test_score"]
